@@ -1,4 +1,5 @@
 package com.example.mymy.domain;
 
-public class Order {
+public enum Role {
+    ADMIN, USER;
 }
