@@ -49,10 +49,10 @@ public class GlobalExceptionHandler {
     }
 
     // 핸들러
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        return ResponseEntity
-                .status(500)
-                .body(new ErrorResponse(500, "서버 내부 오류가 발생했습니다."));
-    }
+    // @ExceptionHandler(Exception.class)
+    // protected ResponseEntity<ErrorResponse> handleException(Exception e) {
+    //     return ResponseEntity
+    //             .status(500)
+    //             .body(new ErrorResponse(500, "서버 내부 오류가 발생했습니다."));
+    // }
 }
