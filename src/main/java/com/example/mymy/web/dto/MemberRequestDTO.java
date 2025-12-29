@@ -7,7 +7,7 @@ public class MemberRequestDTO {
 
     @Getter
     @NoArgsConstructor
-    public class MemberJoinRequest {
+    public static class MemberJoinRequest {
         private String email;
         private String password;
         private String name;
