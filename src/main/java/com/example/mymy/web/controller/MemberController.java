@@ -1,6 +1,7 @@
 package com.example.mymy.web.controller;
 
 import com.example.mymy.service.MemberService;
+import com.example.mymy.web.dto.MemberLoginRequest;
 import com.example.mymy.web.dto.MemberRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,11 @@ public class MemberController {
     public ResponseEntity<String> join(@RequestBody MemberRequestDTO.MemberJoinRequest request) {
         memberService.join(request);
         return ResponseEntity.ok("회원가입이 성공적으로 완료되었습니다.");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody MemberLoginRequest request) {
+        Long memberId = memberService.login(request);
+        return ResponseEntity.ok("로그인에 성공했습니다. 회원: " + memberId);
     }
 }
