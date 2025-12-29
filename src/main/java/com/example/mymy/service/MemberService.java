@@ -4,6 +4,7 @@ import com.example.mymy.converter.MemberConverter;
 import com.example.mymy.domain.Member;
 import com.example.mymy.global.GlobalExceptionHandler;
 import com.example.mymy.repository.MemberRepository;
+import com.example.mymy.web.dto.MemberLoginRequest;
 import com.example.mymy.web.dto.MemberRequestDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,19 @@ public class MemberService {
         // Member 엔티티
         Member member = MemberConverter.toEntity(request);
         return memberRepository.save(member).getMemberId();
+    }
+
+    // 로그인
+    public Long login (MemberLoginRequest request) {
+        // 이메일로 회원 조회
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new GlobalExceptionHandler.BusinessException(GlobalExceptionHandler.ErrorType.MEMBER_NOT_FOUND));
+
+        // 비밀번호 일치 확인
+        if (!member.getPassword().equals(request.getPassword())) {
+            throw new GlobalExceptionHandler.BusinessException(GlobalExceptionHandler.ErrorType.ACCESS_DENIED);
+        }
+
+        return member.getMemberId();
     }
 }
