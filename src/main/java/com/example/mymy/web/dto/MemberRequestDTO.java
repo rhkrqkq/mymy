@@ -14,4 +14,11 @@ public class MemberRequestDTO {
         private String phone;
         private String address;
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class MemberLoginRequest {
+        private String email;
+        private String password;
+    }
 }
