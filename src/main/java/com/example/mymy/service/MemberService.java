@@ -26,7 +26,7 @@ public class MemberService {
                 });
 
         // Member 엔티티
-        Member member = MemberConverter.toEntity(request);
+        Member member = MemberConverter.toEntity(request, passwordEncoder);
         return memberRepository.save(member).getMemberId();
     }
 
@@ -35,6 +35,10 @@ public class MemberService {
         // 이메일로 회원 조회
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new GlobalExceptionHandler.BusinessException(GlobalExceptionHandler.ErrorType.ACCESS_DENIED));
+
+        System.out.println("입력된 비번: " + request.getPassword());
+        System.out.println("DB의 암호화된 비번: " + member.getPassword());
+        System.out.println("일치 여부: " + passwordEncoder.matches(request.getPassword(), member.getPassword()));
 
         // 비밀번호 일치 확인
         if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
