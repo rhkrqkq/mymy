@@ -3,13 +3,14 @@ package com.example.mymy.converter;
 import com.example.mymy.domain.Member;
 import com.example.mymy.domain.Role;
 import com.example.mymy.web.dto.MemberRequestDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class MemberConverter {
 
-    public static Member toEntity(MemberRequestDTO.MemberJoinRequest request) {
+    public static Member toEntity(MemberRequestDTO.MemberJoinRequest request, PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .phone(request.getPhone())
                 .address(request.getAddress())

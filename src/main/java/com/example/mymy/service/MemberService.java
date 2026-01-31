@@ -4,10 +4,10 @@ import com.example.mymy.converter.MemberConverter;
 import com.example.mymy.domain.Member;
 import com.example.mymy.global.GlobalExceptionHandler;
 import com.example.mymy.repository.MemberRepository;
-import com.example.mymy.web.dto.MemberLoginRequest;
 import com.example.mymy.web.dto.MemberRequestDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,8 +16,9 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    // 이메일 중복 체크
+    // 회원가입
     public Long join(MemberRequestDTO.MemberJoinRequest request) {
         memberRepository.findByEmail(request.getEmail())
                 .ifPresent(m -> {
@@ -25,18 +26,22 @@ public class MemberService {
                 });
 
         // Member 엔티티
-        Member member = MemberConverter.toEntity(request);
+        Member member = MemberConverter.toEntity(request, passwordEncoder);
         return memberRepository.save(member).getMemberId();
     }
 
     // 로그인
-    public Long login (MemberLoginRequest request) {
+    public Long login(MemberRequestDTO.MemberLoginRequest request) {
         // 이메일로 회원 조회
         Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new GlobalExceptionHandler.BusinessException(GlobalExceptionHandler.ErrorType.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GlobalExceptionHandler.BusinessException(GlobalExceptionHandler.ErrorType.ACCESS_DENIED));
+
+        System.out.println("입력된 비번: " + request.getPassword());
+        System.out.println("DB의 암호화된 비번: " + member.getPassword());
+        System.out.println("일치 여부: " + passwordEncoder.matches(request.getPassword(), member.getPassword()));
 
         // 비밀번호 일치 확인
-        if (!member.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new GlobalExceptionHandler.BusinessException(GlobalExceptionHandler.ErrorType.ACCESS_DENIED);
         }
 
